@@ -1,4 +1,4 @@
-name: Build LaTeX document
+name: Compile QMK with datew0`s keymap
 on: [push]
 jobs:
   build_latex:
