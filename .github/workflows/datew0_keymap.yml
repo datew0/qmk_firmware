@@ -1,7 +1,7 @@
 name: Compile QMK with datew0`s keymap
 on: [push]
 jobs:
-  build_latex:
+  build_firmware:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
