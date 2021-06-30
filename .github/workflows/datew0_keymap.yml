@@ -11,7 +11,7 @@ jobs:
         run: sudo apt update && sudo apt install gcc-arm-none-eabi make -y
         
       - name: Compile submodules
-        run: make git-submodules
+        run: make git-submodule
         
       - name: Compile QMK firmware
         run: make annepro2/c18:datew0
