@@ -21,12 +21,13 @@ enum my_keycodes {
   KC_AP_MAC
 };
 
-enum {
-  TD_GRAVE_ESC
+enum my_tapdances{
+  TD_GRAVE_ESC,
+  TD_MAC_WIN
 };
 
 enum my_layers {
-  _BASE_LAYER,
+  _WIN_LAYER,
   _MAC_LAYER,
   _CAPS_LAYER,
   _FN1_LAYER,
@@ -34,11 +35,11 @@ enum my_layers {
 };
 
 // define out default user_config
-user_config_t user_config = {.magic = 0xDE, .layer = 1 << _BASE_LAYER};
+user_config_t user_config = {.magic = 0xDE, .layer = 1 << _WIN_LAYER};
 
 // clang-format off
 /*
- * Layer _BASE_LAYER
+ * Layer _WIN_LAYER
  * ,-----------------------------------------------------------------------------------------.
  * | `   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |    Bksp   |
  * |-----------------------------------------------------------------------------------------+
@@ -52,18 +53,18 @@ user_config_t user_config = {.magic = 0xDE, .layer = 1 << _BASE_LAYER};
  * \-----------------------------------------------------------------------------------------/
  */
 const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [_BASE_LAYER] = KEYMAP(/* Win */
+    [_WIN_LAYER] = KEYMAP(/* Win */
         TD(TD_GRAVE_ESC), KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC,
         KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_BSLS,
         LT(_CAPS_LAYER, KC_ESC), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCOLON, KC_QUOT, KC_ENT,
         KC_LSFT, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSFT,
-        KC_LCTL, KC_LGUI, KC_LALT, KC_SPC, TT(_FN1_LAYER), LT(_FN2_LAYER, KC_APP), KC_RALT, KC_RCTL),
+        TD(TD_MAC_WIN), KC_LGUI, KC_LALT, KC_SPC, TT(_FN1_LAYER), LT(_FN2_LAYER, KC_APP), KC_RALT, KC_RCTL),
     [_MAC_LAYER] = KEYMAP(/* Mac */
         TD(TD_GRAVE_ESC), KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC,
         KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_BSLS,
         LT(_CAPS_LAYER, KC_ESC), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCOLON, KC_QUOT, KC_ENT,
         KC_LSFT, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSFT,
-        KC_LCTL, KC_LALT, KC_LGUI, KC_SPC, TT(_FN1_LAYER), LT(_FN2_LAYER, KC_APP), KC_RALT, KC_RCTL),
+        TD(TD_MAC_WIN), KC_LALT, KC_LGUI, KC_SPC, TT(_FN1_LAYER), LT(_FN2_LAYER, KC_APP), KC_RALT, KC_RCTL),
 
     [_CAPS_LAYER] = KEYMAP(/* Hold CapsLock */
         _______, _______, _______, _______, _______, KC_AUDIO_VOL_DOWN, KC_AUDIO_MUTE, KC_AUDIO_VOL_UP, _______, _______, _______, _______, _______, KC_DELETE,
@@ -103,12 +104,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
   case KC_AP_WIN:
     if (record->event.pressed) {
-      default_layer_set(1 << _BASE_LAYER);
+      default_layer_set(1 << _WIN_LAYER);
     }
     return false;
   case KC_AP_LIN:
     if (record->event.pressed) {
-      default_layer_set(1 << _BASE_LAYER);
+      default_layer_set(1 << _WIN_LAYER);
     }
     return false;
   case KC_AP_MAC:
@@ -160,7 +161,7 @@ void keyboard_post_init_user(void) {
   // initialize a new eeprom
   if (user_config.magic != 0xDE) {
     user_config.magic = 0xDE;
-    user_config.layer = 1 << _BASE_LAYER;
+    user_config.layer = 1 << _WIN_LAYER;
     eeprom_write((void *)&user_config, 0, sizeof(user_config_t));
   }
 #endif
@@ -169,6 +170,23 @@ void keyboard_post_init_user(void) {
 
 // datew0`s edits
 
+void mac_win_switch(qk_tap_dance_state_t *state, void *user_data) {
+  if (state->count >= 3) {
+    //eeprom_read((void *)&user_config, 0, sizeof(user_config_t));
+    switch (user_config.layer){
+      case (1<<_WIN_LAYER):
+        user_config.layer = 1 << _MAC_LAYER;
+        break;
+      case (1<<_MAC_LAYER):
+        user_config.layer = 1 << _WIN_LAYER;
+        break;
+    }
+    default_layer_set(user_config.layer);
+    reset_tap_dance(state);
+  }
+}
+
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TD_GRAVE_ESC] = ACTION_TAP_DANCE_DOUBLE(KC_GRAVE, KC_ESC)
+  [TD_GRAVE_ESC] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_GRAVE),
+  [TD_MAC_WIN] = ACTION_TAP_DANCE_FN(mac_win_switch)
 };
