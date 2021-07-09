@@ -193,5 +193,6 @@ void mac_win_switch(qk_tap_dance_state_t *state, void *user_data) {
 }
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TD_GRAVE_ESC] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_GRAVE)
+  [TD_GRAVE_ESC] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_GRAVE),
+  [TD_MAC_WIN] = ACTION_TAP_DANCE_FN(mac_win_switch)
 };
