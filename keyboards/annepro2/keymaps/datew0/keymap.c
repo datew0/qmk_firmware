@@ -13,8 +13,6 @@
 
 /*
 My personal Anne Pro 2 keymap. Will be improved.
-TODO List:
-- DOTA2 macro keybinds
 */
 
 typedef union {
