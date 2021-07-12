@@ -1,13 +1,11 @@
-NKRO_ENABLE = yes
-LTO_ENABLE = no
-SLEEP_LED_ENABLE = no
+NKRO_ENABLE = no
+MOUSEKEY_ENABLE = yes
+LTO_ENABLE = yes
 TAP_DANCE_ENABLE = yes
 
-
 # tech2077
-# Disable console and test wakeup
-#CONSOLE_ENABLE = yes
-#COMMAND_ENABLE = yes
+CONSOLE_ENABLE = yes
+COMMAND_ENABLE = yes
 DEBUG_EEPROM = no
 
 ifeq ($(strip $(BOARD)), ANNEPRO2_C18)
