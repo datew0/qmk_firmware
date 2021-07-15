@@ -71,7 +71,7 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_FN_LAYER]   = KEYMAP(/* Functional */
         KC_PWR, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_DEL,
         _______, _______, _______, KC_END, _______, _______, _______, _______, KC_INSERT, _______, KC_PSCREEN, _______, _______, _______,
-        _______, _______, _______, KC_DEL, _______, _______, KC_HOME, _______, _______, _______, _______, _______, _______,
+        KC_SLEP, _______, _______, KC_DEL, _______, _______, KC_HOME, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, KC_PGDN, KC_PGUP, _______, KC_RSFT,
         _______, _______, _______, _______, _______, KC_APP, KC_RALT, KC_RCTL),
     [_HW_LAYER]   = KEYMAP(/* Hardware Control */
