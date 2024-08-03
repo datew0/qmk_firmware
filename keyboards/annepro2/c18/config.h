@@ -184,7 +184,7 @@
 // #define NO_DEBUG
 
 /* disable print */
-// #define NO_PRINTg
+// #define NO_PRINT
 
 /* disable action features */
 //#define NO_ACTION_LAYER
@@ -193,3 +193,4 @@
 //#define NO_ACTION_MACRO
 //#define NO_ACTION_FUNCTION
 
+#include "config_led.h"

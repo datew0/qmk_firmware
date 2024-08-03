@@ -69,7 +69,7 @@ enum anne_pro_layers {
   /*
   * Layer _FN2_LAYER
   * ,-----------------------------------------------------------------------------------------.
-  * |  ~  | BT1 | BT2 | BT3 | BT4 |  F5 |  F6 |  F7 |LEDOF|LEDON| F10 | F11 | F12 |    Bksp   |
+  * |  ~  | BT1 | BT2 | BT3 | BT4 |  F5 |  F6 | HUE | SAT | BRI | SPD | MOD | TOG |    Bksp   |
   * |-----------------------------------------------------------------------------------------+
   * | Tab    |  q  | UP  |  e  |  r  |  t  |  y  |  u  |  i  |  o  | PS | HOME | END |   \    |
   * |-----------------------------------------------------------------------------------------+
@@ -82,7 +82,7 @@ enum anne_pro_layers {
   *
   */
  [_FN2_LAYER] = KEYMAP( /* Base */
-    KC_TRNS, KC_AP2_BT1, KC_AP2_BT2, KC_AP2_BT3, KC_AP2_BT4, KC_TRNS, KC_TRNS, KC_TRNS, KC_AP_LED_OFF, KC_AP_LED_ON, KC_AP_LED_NEXT_INTENSITY, KC_AP_LED_SPEED, KC_TRNS, KC_TRNS,
+    KC_TRNS, KC_AP2_BT1, KC_AP2_BT2, KC_AP2_BT3, KC_AP2_BT4, KC_TRNS, KC_TRNS, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_MOD, RGB_TOG, KC_TRNS,
     MO(_FN2_LAYER), KC_TRNS, KC_UP, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_PSCR, KC_HOME, KC_END, KC_TRNS,
     KC_TRNS, KC_LEFT, KC_DOWN, KC_RGHT, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_PGUP, KC_PGDN, KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_INS, KC_DEL, KC_TRNS,
@@ -101,61 +101,20 @@ void matrix_scan_user(void) {
 
 // Code to run after initializing the keyboard
 void keyboard_post_init_user(void) {
-    // Here are two common functions that you can use. For more LED functions, refer to the file "qmk_ap2_led.h"
-
-    // annepro2-shine disables LEDs by default. Uncomment this function to enable them at startup.
-    // annepro2LedEnable();
-
-    // Additionally, it also chooses the first LED profile by default. Refer to the "profiles" array in main.c in
-    // annepro2-shine to see the order. Replace "i" with the index of your preferred profile. (i.e the RED profile is index 0)
-    // annepro2LedSetProfile(i);
+    // Enable RGB from the start
+    annepro2LedEnable();
 }
 
 layer_state_t layer_state_set_user(layer_state_t layer) {
-  switch(get_highest_layer(layer)) {
-    case _FN1_LAYER:
-      // Set the leds to green
-      annepro2LedSetForegroundColor(0x00, 0xFF, 0x00);
-      break;
-    case _FN2_LAYER:
-      // Set the leds to blue
-      annepro2LedSetForegroundColor(0x00, 0x00, 0xFF);
-      break;
-    default:
-      // Reset back to the current profile
-      annepro2LedResetForegroundColor();
-      break;
-  }
-  return layer;
+    return layer;
 }
 
-// The function to handle the caps lock logic
-// It's called after the capslock changes state or after entering layers 1 and 2.
-bool led_update_user(led_t leds) {
-  if (leds.caps_lock) {
-    // Set the caps-lock to red
-    const annepro2Led_t color = {
-        .p.red = 0xff,
-        .p.green = 0x00,
-        .p.blue = 0x00,
-        .p.alpha = 0xff
-    };
 
-    annepro2LedMaskSetKey(2, 0, color);
-    /* NOTE: Instead of colouring the capslock only, you can change the whole
-       keyboard with annepro2LedSetForegroundColor */
-  } else {
-    // Reset the capslock if there is no layer active
-    if(!layer_state_is(_FN1_LAYER) && !layer_state_is(_FN2_LAYER)) {
-      const annepro2Led_t color = {
-          .p.red = 0xff,
-          .p.green = 0x00,
-          .p.blue = 0x00,
-          .p.alpha = 0x00
-      };
-      annepro2LedMaskSetKey(2, 0, color);
+/**
+ * Called after RBG effect render.
+ */
+void rgb_matrix_indicators_user() {
+    if (host_keyboard_led_state().caps_lock) {
+        rgb_matrix_set_color_all(_INDICATOR_COLOR); 
     }
-  }
-
-  return true;
 }
